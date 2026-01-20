@@ -7,8 +7,13 @@ if [ "${OTBR_WEB:-1}" != "0" ]; then
     declare otbr_web_port
 
     otbr_web_port="${OTBR_WEB_PORT:-8080}"
+    otbr_web_args=("-I" "wpan0" "-d6" "-s" "-p" "${otbr_web_port}")
 
-    exec stdbuf -oL /usr/sbin/otbr-web -I wpan0 -d6 -s -p "${otbr_web_port}"
+    if [ -n "${OTBR_WEB_INTERFACE}" ]; then
+        otbr_web_args+=("-a" "${OTBR_WEB_INTERFACE}")
+    fi
+
+    exec stdbuf -oL /usr/sbin/otbr-web "${otbr_web_args[@]}"
 else
     echo "INFO: Skipping otbr-web, disabled..."
     exec s6-pause

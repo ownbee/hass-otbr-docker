@@ -18,11 +18,17 @@ services:
       OTBR_REST_PORT: 8081
       OTBR_WEB_PORT: 7586
       AUTOFLASH_FIRMWARE: 0
+      OTBR_LOG_LEVEL: error
     devices:
       - /dev/ttyUSB1:/dev/ttyUSB1
       - /dev/net/tun:/dev/net/tun
     volumes:
       - ./otbr_data:/data/thread
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "1m"
 
   # Matter server example (the standard image)
   matter-server:
@@ -37,6 +43,11 @@ services:
       - ./matter_data:/data/
       - /run/dbus:/run/dbus:ro  # For bluetooth
       - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "1m"
     command: >
       --storage-path /data
       --paa-root-cert-dir /data/credentials

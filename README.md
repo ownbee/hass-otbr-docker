@@ -87,3 +87,8 @@ Also see the following documentation for further information:
 * https://github.com/home-assistant/addons/tree/master/openthread_border_router
 * https://www.home-assistant.io/integrations/matter
 * https://www.home-assistant.io/integrations/thread
+
+
+# Buy me a coffee
+
+I am using my free time maintaining this at nights while the kids are asleep. Buy me a [ko-fi.com/ownbee](https://ko-fi.com/ownbee) if you like to boost my maintenance motivation and keep me awake.

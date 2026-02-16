@@ -11,6 +11,9 @@ if [ "${OTBR_WEB:-1}" != "0" ]; then
 
     if [ -n "${OTBR_WEB_INTERFACE}" ]; then
         otbr_web_args+=("-a" "${OTBR_WEB_INTERFACE}")
+    else
+        # Default to listening on all interfaces
+        otbr_web_args+=("-a" "::")
     fi
 
     exec stdbuf -oL /usr/sbin/otbr-web "${otbr_web_args[@]}"

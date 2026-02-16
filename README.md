@@ -52,7 +52,7 @@ read documentation and forum threads and eventually got it working using this se
     | BAUDRATE           | Serial port baudrate (depends on firmware)   |
     | FLOW_CONTROL (1 or 0) | If hardware flow control should be enabled (depends on firmware) |
     | AUTOFLASH_FIRMWARE (1 or 0) | Automatically install/update firmware (Home Assistant SkyConnect/Yellow) |
-    | OTBR_LOG_LEVEL     | Set the log level of the OpenThread BorderRouter Agent (info)    |
+    | OTBR_LOG_LEVEL     | Set the log level of the OpenThread BorderRouter Agent (debug,info,notice,warning,error,critical,alert,emergency)    |
     | OTBR_REST_PORT     | Port for REST API used by home assistant |
     | OTBR_WEB_PORT      | Port for WEB UI |
     | OTBR_WEB_INTERFACE | *empty* | (Optional) Interface to listen on (e.g. `eth0` or `127.0.0.1`). Default is all interfaces. |
@@ -61,6 +61,7 @@ read documentation and forum threads and eventually got it working using this se
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
     | NETWORK_DEVICE     | IP address and port to connect to a network-based RCP (NOT TESTED) |
     | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
+    | THREAD_1_4         | Define (e.g. set to '1') to enable Thread 1.4 (beta) |
 
 2. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
 

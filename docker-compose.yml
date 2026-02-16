@@ -17,6 +17,7 @@ services:
       BAUDRATE: 460800
       OTBR_REST_PORT: 8081
       OTBR_WEB_PORT: 7586
+      # OTBR_WEB_INTERFACE: "0.0.0.0"
       AUTOFLASH_FIRMWARE: 0
       OTBR_LOG_LEVEL: error
     devices:

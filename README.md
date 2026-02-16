@@ -60,6 +60,7 @@ read documentation and forum threads and eventually got it working using this se
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
     | NETWORK_DEVICE     | IP address and port to connect to a network-based RCP (NOT TESTED) |
     | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
+    | THREAD_1_4         | Define (e.g. set to '1') to enable Thread 1.4 (beta) |
 
 2. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
 

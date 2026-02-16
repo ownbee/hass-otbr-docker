@@ -71,7 +71,7 @@ fi
 
 if [ -z ${trel_if} ]; then
     echo "WARNING: No primary trel interface found! Using ${backbone_if} interface"
-    trel_if = ${backbone_if}
+    trel_if=${backbone_if}
 fi
 
 mkdir -p /data/thread && ln -sft /var/lib /data/thread || echo "Could not create directory /var/lib/thread to store Thread data."
@@ -110,7 +110,7 @@ if [ "$NAT64" != "0" ] ; then
     iptables -t nat -A POSTROUTING -m mark --mark 0x1001 -j MASQUERADE
     iptables -t filter -A FORWARD -o ${backbone_if} -j ACCEPT
     iptables -t filter -A FORWARD -i ${backbone_if} -j ACCEPT
-fi   
+fi
 
 otbr_rest_listen="::"
 otbr_rest_listen_port="${OTBR_REST_PORT:-8081}"

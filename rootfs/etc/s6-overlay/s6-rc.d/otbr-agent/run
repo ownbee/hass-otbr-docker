@@ -6,6 +6,7 @@
 . /etc/s6-overlay/scripts/otbr-agent-common
 
 declare backbone_if
+declare trel_if
 declare device
 declare baudrate
 declare flow_control
@@ -15,6 +16,7 @@ declare otbr_rest_listen
 declare otbr_rest_listen_port
 
 backbone_if=$BACKBONE_IF
+trel_if=$TREL_IF
 device=$DEVICE
 
 # if ! -z ${network_device}; then
@@ -67,6 +69,11 @@ if [ -z ${backbone_if} ]; then
     backbone_if="eth0"
 fi
 
+if [ -z ${trel_if} ]; then
+    echo "WARNING: No primary trel interface found! Using ${backbone_if} interface"
+    trel_if = ${backbone_if}
+fi
+
 mkdir -p /data/thread && ln -sft /var/lib /data/thread || echo "Could not create directory /var/lib/thread to store Thread data."
 
 # We compile the OTBR with firewall support, so otbr-agent tries to update the
@@ -103,7 +110,7 @@ if [ "$NAT64" != "0" ] ; then
     iptables -t nat -A POSTROUTING -m mark --mark 0x1001 -j MASQUERADE
     iptables -t filter -A FORWARD -o ${backbone_if} -j ACCEPT
     iptables -t filter -A FORWARD -i ${backbone_if} -j ACCEPT
-fi
+fi   
 
 otbr_rest_listen="::"
 otbr_rest_listen_port="${OTBR_REST_PORT:-8081}"
@@ -119,4 +126,4 @@ exec s6-notifyoncheck -d -s 300 -w 300 -n 0 stdbuf -oL \
         --rest-listen-port "${otbr_rest_listen_port}" \
         -d${otbr_log_level_int} -v -s \
         "spinel+hdlc+uart://${device}?uart-baudrate=${baudrate}${flow_control}" \
-        "trel://${backbone_if}"
+        "trel://${trel_if}"

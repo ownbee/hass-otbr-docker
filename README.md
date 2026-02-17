@@ -57,6 +57,7 @@ read documentation and forum threads and eventually got it working using this se
     | OTBR_REST_PORT     | Port for REST API used by home assistant |
     | OTBR_WEB (1 or 0)  | Enable or disable WEB UI |
     | OTBR_WEB_ADDRESS   | Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
+    | OTBR_WEB_INTERFACE   | Interface to listen on (e.g. `eth0`). Default is all interfaces. |
     | OTBR_WEB_PORT      | Port for WEB UI |
     | FIREWALL (1 or 0)  | Enable OpenThread Border Router firewall to block unnecessary traffic |
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
@@ -64,15 +65,15 @@ read documentation and forum threads and eventually got it working using this se
     | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
     | THREAD_1_4         | Define (e.g. set to '1') to enable Thread 1.4 (beta) |
 
-2. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
+3. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
 
-3. Integrations -> Open Thread Border Router, and add your border router container that you just
+4. Integrations -> Open Thread Border Router, and add your border router container that you just
    started. I used "http://<HOST_IP>:8081".
 
-4. Go to Integrations -> Thread -> Configure and add the OTBR network, it should pop-up after the
+5. Go to Integrations -> Thread -> Configure and add the OTBR network, it should pop-up after the
    last step. Click "Make as preferred", "Reset Border router" and Enable Android/IOS commissioning.
 
-5. You might have to go to https://<YOUR_HASS_URL>`/config/matter/dashboard` and "SET THREAD
+6. You might have to go to https://<YOUR_HASS_URL>`/config/matter/dashboard` and "SET THREAD
    CREDENTIALS" to the dataset found with clicking the "i" in your Thread integration. Unclear if
    this is needed.
 

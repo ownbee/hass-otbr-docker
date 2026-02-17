@@ -57,7 +57,6 @@ read documentation and forum threads and eventually got it working using this se
     | OTBR_REST_PORT     | Port for REST API used by home assistant |
     | OTBR_WEB (1 or 0)  | Enable or disable WEB UI |
     | OTBR_WEB_ADDRESS   | Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
-    | OTBR_WEB_INTERFACE   | Interface to listen on (e.g. `eth0`). Default is all interfaces. |
     | OTBR_WEB_PORT      | Port for WEB UI |
     | FIREWALL (1 or 0)  | Enable OpenThread Border Router firewall to block unnecessary traffic |
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |

@@ -112,7 +112,7 @@ if [ "$NAT64" != "0" ] ; then
     iptables -t filter -A FORWARD -i ${backbone_if} -j ACCEPT
 fi
 
-if [ -n "${OTBR_WEB_ADDRESS}" ]; then
+if [ -n "${OTBR_REST_ADDRESS}" ]; then
     otbr_rest_listen="${OTBR_REST_ADDRESS}"
 else
     # Default to listening on all interfaces

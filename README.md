@@ -53,10 +53,10 @@ read documentation and forum threads and eventually got it working using this se
     | FLOW_CONTROL (1 or 0) | If hardware flow control should be enabled (depends on firmware) |
     | AUTOFLASH_FIRMWARE (1 or 0) | Automatically install/update firmware (Home Assistant SkyConnect/Yellow) |
     | OTBR_LOG_LEVEL     | Set the log level of the OpenThread BorderRouter Agent (debug,info,notice,warning,error,critical,alert,emergency)    |
-    | OTBR_REST_ADDRESS  | *empty* | (Optional) Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
+    | OTBR_REST_ADDRESS  | Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
     | OTBR_REST_PORT     | Port for REST API used by home assistant |
     | OTBR_WEB (1 or 0)  | Enable or disable WEB UI |
-    | OTBR_WEB_ADDRESS   | *empty* | (Optional) Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
+    | OTBR_WEB_ADDRESS   | Address to listen on (e.g. `127.0.0.1`). Default is all interfaces. |
     | OTBR_WEB_PORT      | Port for WEB UI |
     | FIREWALL (1 or 0)  | Enable OpenThread Border Router firewall to block unnecessary traffic |
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |

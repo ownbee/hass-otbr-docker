@@ -112,7 +112,13 @@ if [ "$NAT64" != "0" ] ; then
     iptables -t filter -A FORWARD -i ${backbone_if} -j ACCEPT
 fi
 
-otbr_rest_listen="::"
+if [ -n "${OTBR_WEB_ADDRESS}" ]; then
+    otbr_rest_listen="${OTBR_REST_ADDRESS}"
+else
+    # Default to listening on all interfaces
+    otbr_rest_listen="::"
+fi
+
 otbr_rest_listen_port="${OTBR_REST_PORT:-8081}"
 
 # Store REST API listen information for check script

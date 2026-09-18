@@ -1,5 +1,5 @@
 ARG ARCH_PREFIX
-FROM homeassistant/${ARCH_PREFIX}-addon-otbr:3.1.2 AS base
+FROM homeassistant/${ARCH_PREFIX}-addon-otbr:3.2.0 AS base
 FROM base
 
 COPY rootfs /

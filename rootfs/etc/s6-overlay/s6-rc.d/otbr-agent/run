@@ -46,7 +46,7 @@ if [ "$(cat /proc/sys/net/ipv6/conf/all/forwarding)" != "1" ]; then
 fi
 
 flow_control=""
-if [ x"${FLOW_CONTROL}" = x"1" ] ; then
+if [ "${FLOW_CONTROL}" = "1" ]; then
     flow_control="&uart-flow-control"
     migrate_flow_control="hardware"
 else
@@ -56,11 +56,11 @@ fi
 
 otbr_log_level_int="$(otbr_log_level_to_int)"
 
-# shellcheck disable=SC2015
 mkdir -p /data/thread && ln -sft /var/lib /data/thread
-rc=$? ; if [ x"$rc" != x"0" ] ; then
+rc=$?
+if [ "${rc}" -ne 0 ]; then
     echo "ERROR: Could not create directory /var/lib/thread to store Thread data."
-    exit $rc
+    exit "${rc}"
 fi
 
 # We compile the OTBR with firewall support, so otbr-agent tries to update the
@@ -77,7 +77,7 @@ ip6tables -I FORWARD 1 -o "${thread_if}" -j "${otbr_forward_ingress_chain}"
 ip6tables -N "${otbr_forward_egress_chain}"
 ip6tables -I FORWARD 2 -i "${thread_if}" -j "${otbr_forward_egress_chain}"
 
-if [ x"${FIREWALL}" = x"1" ] ; then
+if [ "${FIREWALL}" = "1" ]; then
     echo "INFO: Setup OTBR firewall..."
 
     ip6tables -A "${otbr_forward_ingress_chain}" -m pkttype --pkt-type unicast -i "${thread_if}" -j DROP
@@ -93,7 +93,7 @@ else
     ip6tables -A "${otbr_forward_egress_chain}" -j ACCEPT
 fi
 
-if [ x"${NAT64}" = x"1" ] ; then
+if [ "${NAT64}" = "1" ]; then
     # Mark Thread traffic in mangle
     iptables -t mangle -A PREROUTING -i "${thread_if}" -j MARK --set-mark "${otbr_fw_mark}"
 
@@ -115,7 +115,7 @@ otbr_rest_listen_port="${OTBR_REST_PORT:-8081}"
 # If user port is not set, listen on local interface only
 if [ -z "${otbr_rest_listen_port}" ] ; then
     otbr_rest_listen_port="8081"
-elif [ x"${otbr_rest_listen_port}" != x"8081" ]; then
+elif [ "${otbr_rest_listen_port}" != "8081" ]; then
     echo "WARNING: Custom OpenThread REST API port is not supported. Using 8081."
     otbr_rest_listen_port="8081"
 fi

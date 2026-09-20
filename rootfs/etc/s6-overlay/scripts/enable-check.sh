@@ -46,7 +46,7 @@ fi
 # Disable OTBR Web if explicitly turned off
 # ==============================================================================
 
-if [ x"${OTBR_WEB:-1}" = x"0" ] ; then
+if [ "${OTBR_WEB:-1}" = "0" ]; then
     rm -f /etc/s6-overlay/s6-rc.d/user/contents.d/otbr-web
     echo "INFO: The otbr-web is disabled."
 else

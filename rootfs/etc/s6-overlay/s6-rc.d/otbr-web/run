@@ -7,7 +7,7 @@
 # shellcheck source=rootfs/etc/s6-overlay/scripts/otbr-agent-common
 . /etc/s6-overlay/scripts/otbr-agent-common
 
-if [ x"${OTBR_WEB:-1}" = x"0" ]; then
+if [ "${OTBR_WEB:-1}" = "0" ]; then
     echo "INFO: Skipping otbr-web, disabled..."
     exec s6-pause
 fi

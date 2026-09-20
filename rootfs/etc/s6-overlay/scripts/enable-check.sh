@@ -18,7 +18,7 @@ if [[ -f ${marker} ]]; then
 fi
 
 beta_active=false
-if [ -n "${THREAD_BETA}" ] ; then
+if [ "${THREAD_BETA}" = "1" ] ; then
     if (( marker_version < beta_auto_disable_version )); then
         echo "WARNING: Disabling beta mode automatically; the previous beta is now stable."
         export THREAD_BETA=""
@@ -28,7 +28,7 @@ if [ -n "${THREAD_BETA}" ] ; then
 fi
 echo "${beta_auto_disable_version}" > "${marker}"
 
-if [ -n "${THREAD_BETA}" ] ; then
+if [ "${beta_active}" = true ] ; then
     echo "INFO: Beta mode enabled."
 
     ln -sf "/opt/otbr-beta/sbin/otbr-agent" /usr/sbin/otbr-agent
@@ -43,15 +43,15 @@ else
 fi
 
 # ==============================================================================
-# Disable OTBR Web if necessary ports are not exposed
+# Disable OTBR Web if explicitly turned off
 # ==============================================================================
 
-if [ -n "${OTBR_WEB}" ] ; then
-    touch /etc/s6-overlay/s6-rc.d/user/contents.d/otbr-web
-    echo "INFO: Web UI and REST API port are exposed, starting otbr-web."
-else
+if [ "${OTBR_WEB:-1}" = "0" ]; then
     rm -f /etc/s6-overlay/s6-rc.d/user/contents.d/otbr-web
     echo "INFO: The otbr-web is disabled."
+else
+    touch /etc/s6-overlay/s6-rc.d/user/contents.d/otbr-web
+    echo "INFO: Web UI and REST API port are exposed, starting otbr-web."
 fi
 
 # ==============================================================================

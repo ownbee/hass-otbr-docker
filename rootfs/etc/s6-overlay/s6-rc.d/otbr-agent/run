@@ -5,7 +5,7 @@
 # OpenThread BorderRouter start script
 # ==============================================================================
 
-# shellcheck source=./openthread_border_router/rootfs/etc/s6-overlay/scripts/otbr-agent-common
+# shellcheck source=rootfs/etc/s6-overlay/scripts/otbr-agent-common
 . /etc/s6-overlay/scripts/otbr-agent-common
 
 declare trel_if
@@ -14,7 +14,6 @@ declare device
 declare baudrate
 declare flow_control
 declare migrate_flow_control
-declare otbr_log_level
 declare otbr_log_level_int
 declare otbr_rest_listen
 declare otbr_rest_listen_port
@@ -23,6 +22,10 @@ backbone_if=${BACKBONE_IF:-eth0}
 trel_if=${TREL_IF}
 baudrate=${BAUDRATE}
 device=${DEVICE}
+
+if [ -n "${NETWORK_DEVICE}" ]; then
+    device="/tmp/ttyOTBR"
+fi
 
 # Backbone network interface can be configured by user or auto-detected by looking for the primary network interface in the system.
 # If no primary network interface is found, the app will exit with an error and ask the user to configure a backbone network interface in the app configuration.
@@ -39,11 +42,11 @@ fi
 
 # Check if IPv6 forwarding is enabled
 if [ "$(cat /proc/sys/net/ipv6/conf/all/forwarding)" != "1" ]; then
-    echo "WARNING: IPv6 routing/forwarding is not enabled! Make sure the Home Assistant host has IPv6 forwarding enabled."
+    echo "WARNING: IPv6 routing/forwarding is not enabled! Make sure the docker host has IPv6 forwarding enabled."
 fi
 
 flow_control=""
-if [ x"${FLOW_CONTROL}" = x"1" ] ; then
+if [ "${FLOW_CONTROL}" = "1" ]; then
     flow_control="&uart-flow-control"
     migrate_flow_control="hardware"
 else
@@ -51,43 +54,13 @@ else
     migrate_flow_control="none"
 fi
 
-otbr_log_level=${OTBR_LOG_LEVEL:-info}
-case "${otbr_log_level}" in
-    debug)
-        otbr_log_level_int="7"
-        ;;
-    info)
-        otbr_log_level_int="6"
-        ;;
-    notice)
-        otbr_log_level_int="5"
-        ;;
-    warning)
-        otbr_log_level_int="4"
-        ;;
-    error)
-        otbr_log_level_int="3"
-        ;;
-    critical)
-        otbr_log_level_int="2"
-        ;;
-    alert)
-        otbr_log_level_int="1"
-        ;;
-    emergency)
-        otbr_log_level_int="0"
-        ;;
-    *)
-        echo "NOTICE: Unknown OTBR_LOG_LEVEL: ${otbr_log_level}. Using level info"
-        otbr_log_level_int=6
-        ;;
-esac
+otbr_log_level_int="$(otbr_log_level_to_int)"
 
-# shellcheck disable=SC2015
 mkdir -p /data/thread && ln -sft /var/lib /data/thread
-rc=$? ; if [ x"$rc" != x"0" ] ; then
+rc=$?
+if [ "${rc}" -ne 0 ]; then
     echo "ERROR: Could not create directory /var/lib/thread to store Thread data."
-    exit $rc
+    exit "${rc}"
 fi
 
 # We compile the OTBR with firewall support, so otbr-agent tries to update the
@@ -104,7 +77,7 @@ ip6tables -I FORWARD 1 -o "${thread_if}" -j "${otbr_forward_ingress_chain}"
 ip6tables -N "${otbr_forward_egress_chain}"
 ip6tables -I FORWARD 2 -i "${thread_if}" -j "${otbr_forward_egress_chain}"
 
-if [ x"${FIREWALL}" = x"1" ] ; then
+if [ "${FIREWALL}" = "1" ]; then
     echo "INFO: Setup OTBR firewall..."
 
     ip6tables -A "${otbr_forward_ingress_chain}" -m pkttype --pkt-type unicast -i "${thread_if}" -j DROP
@@ -120,7 +93,7 @@ else
     ip6tables -A "${otbr_forward_egress_chain}" -j ACCEPT
 fi
 
-if [ x"${NAT64}" = x"1" ] ; then
+if [ "${NAT64}" = "1" ]; then
     # Mark Thread traffic in mangle
     iptables -t mangle -A PREROUTING -i "${thread_if}" -j MARK --set-mark "${otbr_fw_mark}"
 
@@ -142,7 +115,7 @@ otbr_rest_listen_port="${OTBR_REST_PORT:-8081}"
 # If user port is not set, listen on local interface only
 if [ -z "${otbr_rest_listen_port}" ] ; then
     otbr_rest_listen_port="8081"
-elif [ x"${otbr_rest_listen_port}" != x"8081" ]; then
+elif [ "${otbr_rest_listen_port}" != "8081" ]; then
     echo "WARNING: Custom OpenThread REST API port is not supported. Using 8081."
     otbr_rest_listen_port="8081"
 fi

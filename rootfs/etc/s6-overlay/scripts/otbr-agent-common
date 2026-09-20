@@ -12,3 +12,24 @@ otbr_forward_egress_chain="OTBR_FORWARD_EGRESS"
 otbr_forward_nat64_chain="OTBR_FORWARD_NAT64"
 otbr_fw_mark="0x1001"
 
+# Map the configured OTBR_LOG_LEVEL to the numeric level expected by the
+# otbr-agent/otbr-web -d flag. Echoes the numeric level; unknown levels fall
+# back to "info" (6).
+otbr_log_level_to_int() {
+    local level
+    level=${OTBR_LOG_LEVEL:-info}
+    case "${level}" in
+        debug)     echo "7" ;;
+        info)      echo "6" ;;
+        notice)    echo "5" ;;
+        warning)   echo "4" ;;
+        error)     echo "3" ;;
+        critical)  echo "2" ;;
+        alert)     echo "1" ;;
+        emergency) echo "0" ;;
+        *)
+            echo "NOTICE: Unknown OTBR_LOG_LEVEL: ${level}. Using level info" >&2
+            echo "6"
+            ;;
+    esac
+}

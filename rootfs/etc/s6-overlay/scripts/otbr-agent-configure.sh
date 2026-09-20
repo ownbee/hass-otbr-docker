@@ -6,7 +6,7 @@
 
 ot-ctl trel enable
 
-if [ x"${NAT64}" = x"1" ] ; then
+if [ "${NAT64}" = "1" ]; then
     echo "INFO: Enabling NAT64."
     ot-ctl nat64 enable
     ot-ctl dns server upstream enable

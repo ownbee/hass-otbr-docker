@@ -46,22 +46,28 @@ read documentation and forum threads and eventually got it working using this se
    according to you environment. The env variables are mapped from the addon config to these env
    variables:
 
-    | ENV VARIABLE       | Description                                            |
-    |--------------------|--------------------------------------------------------|
-    | DEVICE             | Serial port where the OpenThread RCP Radio is attached. Set to `/tmp/ttyOTBR` if using network-based RCP |
-    | BAUDRATE           | Serial port baudrate (depends on firmware)   |
-    | FLOW_CONTROL (1 or 0) | If hardware flow control should be enabled (depends on firmware) |
-    | AUTOFLASH_FIRMWARE (1 or 0) | Automatically install/update firmware (Home Assistant SkyConnect/Yellow) |
-    | OTBR_LOG_LEVEL     | Set the log level of the OpenThread BorderRouter Agent (debug,info,notice,warning,error,critical,alert,emergency)    |
-    | OTBR_REST_PORT     | Port for REST API used by home assistant |
-    | OTBR_WEB_PORT      | Port for WEB UI |
-    | OTBR_WEB_INTERFACE | *empty* | (Optional) Interface to listen on (e.g. `eth0` or `127.0.0.1`). Default is all interfaces. |
-    | OTBR_WEB (1 or 0)  | Enable or disable WEB UI |
-    | FIREWALL (1 or 0)  | Enable OpenThread Border Router firewall to block unnecessary traffic |
-    | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
-    | NETWORK_DEVICE     | IP address and port to connect to a network-based RCP (NOT TESTED) |
-    | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
-    | THREAD_BETA        | Define (i.e. set to '1') to enable Thread 1.4+ beta binaries |
+    Most boolean options must be set to exactly `1` to enable the feature; anything
+    else (including unset) leaves them at their default, which is **off** except for
+    `FLOW_CONTROL` and `OTBR_WEB` — those two default to **on** and are disabled by
+    setting them to `0` instead.
+
+    | ENV VARIABLE       | Default | Description                                            |
+    |--------------------|---------|--------------------------------------------------------|
+    | DEVICE             | -       | Serial port where the OpenThread RCP Radio is attached. Set to `/tmp/ttyOTBR` if using network-based RCP |
+    | BAUDRATE           | -       | Serial port baudrate (depends on firmware)   |
+    | FLOW_CONTROL (bool) | on     | If hardware flow control should be enabled (depends on firmware) |
+    | AUTOFLASH_FIRMWARE (bool) | off | Automatically install/update firmware (Home Assistant SkyConnect/Yellow) |
+    | OTBR_LOG_LEVEL     | info    | Log level of the OpenThread BorderRouter agent and web UI (debug,info,notice,warning,error,critical,alert,emergency) |
+    | OTBR_REST_PORT     | 8081    | Port for REST API used by home assistant |
+    | OTBR_WEB (bool)    | on      | Enable or disable the WEB UI |
+    | OTBR_WEB_PORT      | 8080    | Port for WEB UI |
+    | OTBR_WEB_INTERFACE | all     | (Optional) Interface to listen on (e.g. `eth0` or `127.0.0.1`) |
+    | FIREWALL (bool)    | off     | Enable OpenThread Border Router firewall to block unnecessary traffic |
+    | NAT64 (bool)       | off     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
+    | NETWORK_DEVICE     | -       | IP address and port to connect to a network-based RCP (NOT TESTED) |
+    | BACKBONE_IF        | eth0    | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
+    | TREL_IF            | BACKBONE_IF | (Optional) Network interface to use for TREL, if different from `BACKBONE_IF` |
+    | THREAD_BETA (bool) | off     | Use the beta OTBR build instead of stable (tests upcoming OTBR releases; Thread 1.4 is already part of the stable build) |
 
 2. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
 

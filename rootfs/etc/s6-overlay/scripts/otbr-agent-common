@@ -12,3 +12,61 @@ otbr_forward_egress_chain="OTBR_FORWARD_EGRESS"
 otbr_forward_nat64_chain="OTBR_FORWARD_NAT64"
 otbr_fw_mark="0x1001"
 
+ipset_destroy_if_exist()
+{
+    # The ipset seems to be in use by the kernel for a brief period,
+    # retry destroying it
+    while ipset list -n "$1" > /dev/null 2>&1; do
+        ipset destroy "$1" || true
+    done
+}
+
+# Remove the firewall/NAT64 rules, chains and ipsets this image creates.
+# Safe to call when none of them exist. Called from the finish script and
+# also before setup in the run script, since the finish script does not run
+# when the container is killed and with host networking the rules outlive it.
+otbr_firewall_teardown()
+{
+    while ip6tables -C FORWARD -o "${thread_if}" -j "${otbr_forward_ingress_chain}" > /dev/null 2>&1; do
+        ip6tables -D FORWARD -o "${thread_if}" -j "${otbr_forward_ingress_chain}"
+    done
+
+    if ip6tables -L "${otbr_forward_ingress_chain}" > /dev/null 2>&1; then
+        ip6tables -w -F "${otbr_forward_ingress_chain}"
+        ip6tables -w -X "${otbr_forward_ingress_chain}"
+    fi
+
+    ipset_destroy_if_exist otbr-ingress-deny-src
+    ipset_destroy_if_exist otbr-ingress-deny-src-swap
+    ipset_destroy_if_exist otbr-ingress-allow-dst
+    ipset_destroy_if_exist otbr-ingress-allow-dst-swap
+
+    while ip6tables -C FORWARD -i "${thread_if}" -j "${otbr_forward_egress_chain}" > /dev/null 2>&1; do
+        ip6tables -D FORWARD -i "${thread_if}" -j "${otbr_forward_egress_chain}"
+    done
+
+    if ip6tables -L "${otbr_forward_egress_chain}" > /dev/null 2>&1; then
+        ip6tables -w -F "${otbr_forward_egress_chain}"
+        ip6tables -w -X "${otbr_forward_egress_chain}"
+    fi
+
+    # Remove FORWARD jump(s)
+    while iptables -C FORWARD -j "${otbr_forward_nat64_chain}" > /dev/null 2>&1; do
+        iptables -D FORWARD -j "${otbr_forward_nat64_chain}"
+    done
+
+    # Flush and delete chain
+    if iptables -L "${otbr_forward_nat64_chain}" -n > /dev/null 2>&1; then
+        iptables -w -F "${otbr_forward_nat64_chain}"
+        iptables -w -X "${otbr_forward_nat64_chain}"
+    fi
+
+    # Clean mangle and nat rules
+    while iptables -t mangle -C PREROUTING -i "${thread_if}" -j MARK --set-mark "${otbr_fw_mark}" > /dev/null 2>&1; do
+        iptables -t mangle -D PREROUTING -i "${thread_if}" -j MARK --set-mark "${otbr_fw_mark}"
+    done
+
+    while iptables -t nat -C POSTROUTING -m mark --mark "${otbr_fw_mark}" -j MASQUERADE > /dev/null 2>&1; do
+        iptables -t nat -D POSTROUTING -m mark --mark "${otbr_fw_mark}" -j MASQUERADE
+    done
+}

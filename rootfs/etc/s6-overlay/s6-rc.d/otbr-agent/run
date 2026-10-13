@@ -90,6 +90,11 @@ rc=$? ; if [ x"$rc" != x"0" ] ; then
     exit $rc
 fi
 
+# Remove leftovers from a previous run whose finish script never ran (e.g. the
+# container was killed). With host networking they survive the container and
+# would otherwise be added a second time below.
+otbr_firewall_teardown
+
 # We compile the OTBR with firewall support, so otbr-agent tries to update the
 # ipsets. Therefor, create ipsets always to avoid errors from otbr-agent. Just
 # the ipsets  won't have an effect in practice when the firewall is disabled.

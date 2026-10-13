@@ -10,12 +10,19 @@ if [ x"${OTBR_WEB:-1}" = x"0" ]; then
     exec s6-pause
 fi
 
+# shellcheck source=./openthread_border_router/rootfs/etc/s6-overlay/scripts/otbr-agent-common
+. /etc/s6-overlay/scripts/otbr-agent-common
+
 echo "INFO: Starting otbr-web..."
 declare otbr_web_port
+declare otbr_log_level_int
+
+# Unknown levels are already reported by otbr-agent, fall back to info here
+otbr_log_level_int="$(otbr_log_level_to_int)" || otbr_log_level_int=6
 
 otbr_web_args=(
     "-I" "wpan0"
-    "-d6" "-s"
+    "-d${otbr_log_level_int}" "-s"
     "-p" "${OTBR_WEB_PORT:-8080}"
     "-a" "${OTBR_WEB_INTERFACE:-::}"
 )

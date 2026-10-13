@@ -14,7 +14,6 @@ declare device
 declare baudrate
 declare flow_control
 declare migrate_flow_control
-declare otbr_log_level
 declare otbr_log_level_int
 declare otbr_rest_listen
 declare otbr_rest_listen_port
@@ -51,37 +50,10 @@ else
     migrate_flow_control="none"
 fi
 
-otbr_log_level=${OTBR_LOG_LEVEL:-info}
-case "${otbr_log_level}" in
-    debug)
-        otbr_log_level_int="7"
-        ;;
-    info)
-        otbr_log_level_int="6"
-        ;;
-    notice)
-        otbr_log_level_int="5"
-        ;;
-    warning)
-        otbr_log_level_int="4"
-        ;;
-    error)
-        otbr_log_level_int="3"
-        ;;
-    critical)
-        otbr_log_level_int="2"
-        ;;
-    alert)
-        otbr_log_level_int="1"
-        ;;
-    emergency)
-        otbr_log_level_int="0"
-        ;;
-    *)
-        echo "NOTICE: Unknown OTBR_LOG_LEVEL: ${otbr_log_level}. Using level info"
-        otbr_log_level_int=6
-        ;;
-esac
+if ! otbr_log_level_int="$(otbr_log_level_to_int)"; then
+    echo "NOTICE: Unknown OTBR_LOG_LEVEL: ${OTBR_LOG_LEVEL}. Using level info"
+    otbr_log_level_int=6
+fi
 
 # shellcheck disable=SC2015
 mkdir -p /data/thread && ln -sft /var/lib /data/thread

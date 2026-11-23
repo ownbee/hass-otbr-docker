@@ -32,6 +32,7 @@ services:
         max-size: "1m"
 
   # Matter server example (the standard image)
+  # Alternative: ghcr.io/matter-js/matterjs-server (some users report matter-js works better).
   matter-server:
     image: ghcr.io/home-assistant-libs/python-matter-server:stable
     container_name: matter-server

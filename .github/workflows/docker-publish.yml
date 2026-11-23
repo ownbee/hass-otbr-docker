@@ -58,8 +58,6 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          build-args: |
-            ARCH_PREFIX=amd64
           load: true
           tags: |
             ${{ steps.set_tags.outputs.TAGS }}
@@ -116,8 +114,6 @@ jobs:
         with:
           context: .
           platforms: linux/arm64
-          build-args: |
-            ARCH_PREFIX=aarch64
           load: true
           tags: |
             ${{ steps.set_tags.outputs.TAGS }}

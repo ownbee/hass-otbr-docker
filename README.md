@@ -3,10 +3,31 @@
 Stand-alone Home Assistant OpenThread Border Router docker container. For containerized home
 assistance setup without Yellow or HassOS.
 
-This is a docker container based on the Home Assistant OpenThread Border Router add-on
-(https://github.com/home-assistant/addons/tree/master/openthread_border_router) to get the patches
-and quirks that the hass team has made. It is the same without the bashio stuff that communicates
-with home assistance instance in some way. Just to make the container work stand-alone.
+This is a docker container based on the Home Assistant OpenThread Border Router app
+(https://github.com/home-assistant/app-openthread-border-router, formerly the add-on in
+https://github.com/home-assistant/addons) to get the patches and quirks that the hass team has
+made. It is built on top of the official app image
+(`ghcr.io/home-assistant/app-openthread-border-router`), so the OTBR binaries are identical. Only the
+startup scripts are replaced to make the container work stand-alone.
+
+## What is removed compared to the official app
+
+The official image only runs under the Home Assistant Supervisor (Home Assistant OS or Supervised).
+Its scripts use bashio to talk to the Supervisor, which does not exist in a plain docker setup. All
+of that is removed in this container:
+
+* **Configuration:** app options are read from environment variables (see [Setup](#setup)) instead
+  of the Supervisor's options file.
+* **Backbone interface:** not auto-detected through the Supervisor network API. Set `BACKBONE_IF`
+  (defaults to `eth0`) and optionally `TREL_IF` (defaults to `BACKBONE_IF`).
+* **Ports:** REST API and web UI ports come from `OTBR_REST_PORT` and `OTBR_WEB_PORT` instead of the
+  Supervisor's port mapping.
+* **Discovery:** the border router is not announced to Home Assistant automatically. Add the Open
+  Thread Border Router integration by hand (see below).
+* **Banner and option updates:** no Supervisor version/update banner, and the app cannot rewrite its
+  own options (e.g. automatic beta disable only applies to the current run).
+* **Logging:** plain `echo` lines with a level prefix instead of bashio logging. Use
+  `docker logs -t` if you want timestamps.
 
 Tested with [Home Assistant Connect ZBT-1](https://www.home-assistant.io/connectzbt1/). Only tested
 with Aqara U200 Lock as it is the only Thread device I've got so far.
@@ -60,7 +81,8 @@ read documentation and forum threads and eventually got it working using this se
     | FIREWALL (1 or 0)  | Enable OpenThread Border Router firewall to block unnecessary traffic |
     | NAT64 (1 or 0)     | Enable NAT64 to allow Thread devices accessing IPv4 addresses |
     | NETWORK_DEVICE     | IP address and port to connect to a network-based RCP (NOT TESTED) |
-    | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0) |
+    | BACKBONE_IF        | Host network interface to use (e.g. eth0, wlan0, enp3s0). Default `eth0` |
+    | TREL_IF            | (Optional) Interface for Thread Radio Encapsulation Link. Default is `BACKBONE_IF` |
     | THREAD_BETA        | Define (i.e. set to '1') to enable Thread 1.4+ beta binaries |
 
 2. Install the `Open Thread Border Router`, `Thread` and `Matter` integrations in your home assistance instance.
@@ -84,7 +106,7 @@ read documentation and forum threads and eventually got it working using this se
 Also see the following documentation for further information:
 
 * https://openthread.io/guides/border-router/docker
-* https://github.com/home-assistant/addons/tree/master/openthread_border_router
+* https://github.com/home-assistant/app-openthread-border-router
 * https://www.home-assistant.io/integrations/matter
 * https://www.home-assistant.io/integrations/thread
 

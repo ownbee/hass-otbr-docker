@@ -111,6 +111,23 @@ Also see the following documentation for further information:
 * https://www.home-assistant.io/integrations/thread
 
 
+## Healthcheck
+
+The image has a Docker `HEALTHCHECK` that runs `ot-ctl state` every 30 seconds and reports the
+container as healthy once the border router is `leader`, `router` or `child` (60 second start
+period, unhealthy after 3 failed checks). A border router that has not formed or joined a Thread
+network yet shows as unhealthy. To change or turn it off, override it in your compose file:
+
+```yaml
+services:
+  otbr:
+    healthcheck:
+      interval: 60s
+      # or disable it completely:
+      # disable: true
+```
+
+
 # Buy me a coffee
 
 I am using my free time maintaining this at nights while the kids are asleep. Buy me a [ko-fi.com/ownbee](https://ko-fi.com/ownbee) if you like to boost my maintenance motivation and keep me awake.
